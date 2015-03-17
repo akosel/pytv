@@ -1,0 +1,27 @@
+<html !DOCTYPE>
+  <head>
+    <style>
+      button {
+
+      }
+    </style>
+  </head>
+  <body>
+  <main>
+  <h1>Welcome</h1>
+  <button id='toggle_play' type=button>Play/Pause</button>
+  <button id='forward' type=button>Forward</button>
+  <button id='rewind' type=button>Rewind</button>
+  </main>
+  <script>
+    document.querySelector('#toggle_play').onclick = function() { get('/cmd/play'); };
+    document.querySelector('#forward').onclick = function() { get('/cmd/forward'); };
+    document.querySelector('#rewind').onclick = function() { get('/cmd/rewind'); };
+    function get(url) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url);
+      xhr.send();
+    }
+  </script>
+  </body>
+</html>
