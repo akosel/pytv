@@ -3,45 +3,135 @@
     <style>
       body {
         font-family: sans-serif;
+        background-color: #fdf6e3;
+        color: #268bd2;
       }
       button {
         padding: 20px;
         font-size: 36px;
-        border: none;
+        border: solid;
+        border-radius: 8px;
+        background-color: transparent;
         width: 100%; 
         cursor: pointer;
         display: block;
+        color: #268bd2;
         margin-top: 10px;
       }
       button:hover {
-        background-color: #666;
+        background-color: #ccc;
+      }
+      .movies, .remote-buttons {
+        display: none;
+      }
+      .tv-buttons {
+        margin-top: 30px;
+      }
+      .movie {
+        padding: 20px;
+        font-size: 36px;
+        margin-top: 10px;
+        border-radius: 8px;
+        border: solid;
+        cursor: pointer;
+      }
+      .movie:hover {
+        background-color: #ccc;
+      }
+      
+      #quit {
+        margin: 50px 0;
+      }
+      #quit, #off {
+        color: #dc322f;
+      }
+      #quit:hover, #off:hover {
+        color: #ac322f;
       }
     </style>
   </head>
   <body>
   <main>
-  <h1>Welcome</h1>
-  <button id='play' type=button>Start</button>
-  <button id='toggle_play' type=button>Play/Pause</button>
-  <button id='forward' type=button>Forward</button>
-  <button id='rewind' type=button>Rewind</button>
-  <button id='quit' type=button>Quit</button>
+  <h1>Movie Land</h1>
+  <p class='message'>Click a movie to begin watching.</p>
+  <section class='remote-buttons'>
+    <button id='play' type=button>Start</button>
+    <button id='toggle_play' type=button>Play/Pause</button>
+    <button id='forward' type=button>Forward</button>
+    <button id='rewind' type=button>Rewind</button>
+    <button id='quit' type=button>Quit</button>
+
+  </section>
+  <section class='movies'>
+  </section>
+  <section class='tv-buttons'>
+    <button id='on' type=button>TV On</button>
+    <button id='off' type=button>TV Off</button>
+  </section>
   </main>
   <script>
-    document.querySelector('#play').onclick = function() { get('/play/78'); };
+    setInterval(function() {
+      get('/playing', function(xhr) {
+        if (xhr.responseText === 'True') {
+          togglePlayState(true);
+        } else {
+          togglePlayState(false);
+        }
+      });
+    }(), 2000);
+    // Selectors
+    var $buttons = document.querySelector('.remote-buttons');
+    var $movies = document.querySelector('.movies');
+    var $message = document.querySelector('.message');
+
+    // Event Listeners
     document.querySelector('#toggle_play').onclick = function() { get('/cmd/play'); };
     document.querySelector('#forward').onclick = function() { get('/cmd/forward'); };
     document.querySelector('#rewind').onclick = function() { get('/cmd/rewind'); };
-    document.querySelector('#quit').onclick = function() { get('/cmd/quit'); };
+    document.querySelector('#quit').onclick = function() { get('/cmd/quit'); togglePlayState(false);  };
+
+    document.querySelector('#on').onclick = function() { get('/on'); };
+    document.querySelector('#off').onclick = function() { get('/off'); };
+
+    // Get the list of movies. Add it to the page.
+    var $main = document.querySelector('main');
+    var acceptedFormats = ['mkv', 'mp4', 'mpeg'];
+    get('/movies', function(xhr) {
+      var movies = JSON.parse(xhr.responseText);
+      movies.forEach(function(path, idx) {
+        var $link = document.createElement('article');
+        $link.className = 'movie';
+        var movie = path.split('/').pop();
+        var ext = movie.split('.').pop();
+        if (acceptedFormats.indexOf(ext) > -1) {
+          $link.textContent = movie;
+          $link.onclick = function() { get('/play/' + idx); togglePlayState(true); };
+          $movies.appendChild($link);
+        }
+      });
+    });
+
+    // Helper functions
     function get(url, callback) {
       var xhr = new XMLHttpRequest();
       xhr.open('GET', url);
       xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          console.log(xhr);
+        if (xhr.readyState === 4 && xhr.status === 200 && callback) {
+          callback(xhr);
         }
       }
       xhr.send();
+    }
+    function togglePlayState(playing) {
+      if (playing) {
+        $buttons.style.display = 'block';
+        $movies.style.display = 'none';
+        $message.textContent = 'Enjoy your film. Press quit at any time to return to the movie list.'
+      } else {
+        $buttons.style.display = 'none';
+        $movies.style.display = 'block';
+        $message.textContent = 'Click a movie to begin watching.'
+      }
     }
   </script>
   </body>

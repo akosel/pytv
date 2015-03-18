@@ -18,3 +18,4 @@ def toggle_play():
 
 def quit():
     subprocess.call([omx, 'q'])
+    subprocess.call(['rm', '/tmp/playing'])
