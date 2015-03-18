@@ -29,7 +29,6 @@ def movies():
 
 @app.route('/play/<idx>')
 def play(idx):
-    #path = '/home/pi/usbdrv/Interstellar_(2014)_720p_BluRay_[G2G.fm].mp4'
     movies = subprocess.check_output(['find', '/home/pi/usbdrv', '-type', 'f', '-not', '-path', '*/\.*'])
     movie_list = movies.strip().split('\n')
     omxhandler.start(movie_list[int(idx)])
@@ -41,15 +40,7 @@ def playing():
 
 @app.route('/cmd/<cmd>')
 def key(cmd):
-    if cmd == 'play' or cmd == 'pause':
-        omxhandler.toggle_play()
-    elif cmd == 'rewind':
-        omxhandler.rewind()
-    elif cmd == 'forward':
-        omxhandler.forward()
-    elif cmd == 'quit':
-        omxhandler.quit()
-
+    omxhandler.commandDict[cmd]()
     return 'done'
 
 if __name__ == '__main__':

@@ -12,9 +12,10 @@
         border: solid;
         border-radius: 8px;
         background-color: transparent;
-        width: 100%; 
+        width: 45%; 
+        box-sizing: border-box;
         cursor: pointer;
-        display: block;
+        display: inline-block;
         color: #268bd2;
         margin-top: 10px;
       }
@@ -23,9 +24,11 @@
       }
       .movies, .remote-buttons {
         display: none;
+        text-align: center;
       }
       .tv-buttons {
         margin-top: 30px;
+        text-align: center;
       }
       .movie {
         padding: 20px;
@@ -55,10 +58,12 @@
   <h1>Movie Land</h1>
   <p class='message'>Click a movie to begin watching.</p>
   <section class='remote-buttons'>
-    <button id='play' type=button>Start</button>
     <button id='toggle_play' type=button>Play/Pause</button>
-    <button id='forward' type=button>Forward</button>
-    <button id='rewind' type=button>Rewind</button>
+    <br>
+    <button id='rewind' type=button>-30s</button>
+    <button id='forward' type=button>+30s</button>
+    <button id='down' type=button>Volume Down</button>
+    <button id='up' type=button>Volume Up</button>
     <button id='quit' type=button>Quit</button>
 
   </section>
@@ -88,6 +93,8 @@
     document.querySelector('#toggle_play').onclick = function() { get('/cmd/play'); };
     document.querySelector('#forward').onclick = function() { get('/cmd/forward'); };
     document.querySelector('#rewind').onclick = function() { get('/cmd/rewind'); };
+    document.querySelector('#down').onclick = function() { get('/cmd/volume_down'); };
+    document.querySelector('#up').onclick = function() { get('/cmd/volume_up'); };
     document.querySelector('#quit').onclick = function() { get('/cmd/quit'); togglePlayState(false);  };
 
     document.querySelector('#on').onclick = function() { get('/on'); };
