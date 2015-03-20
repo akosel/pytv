@@ -3,6 +3,7 @@ import subprocess
 import flask
 import omxhandler
 import json
+from werkzeug.contrib.fixers import ProxyFix
 
 app = flask.Flask(__name__)
 cwd = os.getcwd()
@@ -42,6 +43,8 @@ def playing():
 def key(cmd):
     omxhandler.commandDict[cmd]()
     return 'done'
+
+app.wsgi_app = ProxyFix(app.wsgi_app)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080, host='0.0.0.0')
