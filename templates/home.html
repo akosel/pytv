@@ -55,13 +55,15 @@
   </head>
   <body>
   <main>
-  <h1>Movie Land</h1>
-  <p class='message'>Click a movie to begin watching.</p>
+  <h1 class='title'>Movie Land</h1>
+  <p class='message'></p>
   <section class='remote-buttons'>
     <button id='toggle_play' type=button>Play/Pause</button>
     <br>
-    <button id='rewind' type=button>-30s</button>
-    <button id='forward' type=button>+30s</button>
+    <button id='rewind' type=button>Back 30 Seconds</button>
+    <button id='forward' type=button>Forward 30 Seconds</button>
+    <button id='rewind_big' type=button>Back 10 Minutes</button>
+    <button id='forward_big' type=button>Forward 10 Minutes</button>
     <button id='down' type=button>Volume Down</button>
     <button id='up' type=button>Volume Up</button>
     <button id='quit' type=button>Quit</button>
@@ -75,7 +77,7 @@
   </section>
   </main>
   <script>
-    setInterval(function() {
+    var poll = function() {
       get('/playing', function(xhr) {
         if (xhr.responseText === 'True') {
           togglePlayState(true);
@@ -83,16 +85,21 @@
           togglePlayState(false);
         }
       });
-    }(), 2000);
+    };
+    poll();
+    setInterval(poll, 2000);
     // Selectors
     var $buttons = document.querySelector('.remote-buttons');
     var $movies = document.querySelector('.movies');
     var $message = document.querySelector('.message');
+    var $title = document.querySelector('.title');
 
     // Event Listeners
     document.querySelector('#toggle_play').onclick = function() { get('/cmd/play'); };
     document.querySelector('#forward').onclick = function() { get('/cmd/forward'); };
     document.querySelector('#rewind').onclick = function() { get('/cmd/rewind'); };
+    document.querySelector('#forward_big').onclick = function() { get('/cmd/forward_big'); };
+    document.querySelector('#rewind_big').onclick = function() { get('/cmd/rewind_big'); };
     document.querySelector('#down').onclick = function() { get('/cmd/volume_down'); };
     document.querySelector('#up').onclick = function() { get('/cmd/volume_up'); };
     document.querySelector('#quit').onclick = function() { get('/cmd/quit'); togglePlayState(false);  };
@@ -102,7 +109,7 @@
 
     // Get the list of movies. Add it to the page.
     var $main = document.querySelector('main');
-    var acceptedFormats = ['mkv', 'mp4', 'mpeg'];
+    var acceptedFormats = ['mkv', 'mp4', 'mpeg', 'm4v'];
     get('/movies', function(xhr) {
       var movies = JSON.parse(xhr.responseText);
       movies.forEach(function(path, idx) {
@@ -112,7 +119,7 @@
         var ext = movie.split('.').pop();
         if (acceptedFormats.indexOf(ext) > -1) {
           $link.textContent = movie;
-          $link.onclick = function() { get('/play/' + idx); togglePlayState(true); };
+          $link.onclick = function() { get('/play/' + idx); togglePlayState(true, $link.textContent); };
           $movies.appendChild($link);
         }
       });
@@ -129,15 +136,19 @@
       }
       xhr.send();
     }
-    function togglePlayState(playing) {
+    function togglePlayState(playing, movie) {
       if (playing) {
         $buttons.style.display = 'block';
         $movies.style.display = 'none';
         $message.textContent = 'Enjoy your film. Press quit at any time to return to the movie list.'
+        if (movie) {
+          $title.textContent = 'Now Playing - ' + movie; 
+        }
       } else {
         $buttons.style.display = 'none';
         $movies.style.display = 'block';
-        $message.textContent = 'Click a movie to begin watching.'
+        $message.textContent = 'Click a movie to begin watching. You may need to switch the input (press the button called TV/VCR) to HDMI1/DVI.'
+        $title.textContent = 'Movie Land'; 
       }
     }
   </script>

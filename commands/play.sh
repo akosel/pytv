@@ -10,3 +10,4 @@ touch /tmp/playing
 # Start the movie
 $DIR/startplay.sh &
 omxplayer -o hdmi "$1" < /tmp/cmd
+rm /tmp/playing

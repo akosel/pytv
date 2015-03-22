@@ -29,8 +29,8 @@ def volume_down():
     subprocess.call([omx, '-'])
 
 def quit():
-    subprocess.call([omx, 'q'])
     subprocess.call(['rm', '/tmp/playing'])
+    subprocess.call([omx, 'q'])
 
 # Dictionary of commands for use in app.py
 commandDict = {
