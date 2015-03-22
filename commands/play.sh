@@ -6,6 +6,7 @@ if [ ! -f /tmp/cmd ]; then
   mkfifo /tmp/cmd
 fi
 
+echo "as" | cec-client -s
 touch /tmp/playing
 # Start the movie
 $DIR/startplay.sh &
