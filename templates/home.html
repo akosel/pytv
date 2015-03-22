@@ -109,7 +109,7 @@
 
     // Get the list of movies. Add it to the page.
     var $main = document.querySelector('main');
-    var acceptedFormats = ['mkv', 'mp4', 'mpeg', 'm4v'];
+    var acceptedFormats = ['mkv', 'mp4', 'mpeg', 'm4v', 'avi'];
     get('/movies', function(xhr) {
       var movies = JSON.parse(xhr.responseText);
       movies.forEach(function(path, idx) {
