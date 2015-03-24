@@ -1,5 +1,7 @@
 # pytv
-Lite GUI for playing videos on Raspberry Pi with omxplayer. I wrote this on a Raspberry Pi 2 running Raspbian. 
+Lite GUI for playing videos on Raspberry Pi with omxplayer on a local network. Once this is up and running, anyone on your network can visit the site for your Pi's local IP and play videos. 
+
+I wrote this for a Raspberry Pi 2 running Raspbian. 
 There are nice operating systems like OpenElec that are specialized for media, but I wanted the flexibility of Raspbian. Plus, I wanted to do all of the tinkering myself, because that's the main reason I bought the Pi. For tinkering. 
 
 ## Setup
