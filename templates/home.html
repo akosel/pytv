@@ -6,9 +6,16 @@
         background-color: #fdf6e3;
         color: #268bd2;
       }
+      * {
+        box-sizing: border-box;
+      }
+      main {
+        width: 960px;
+        margin: 0 auto;
+      }
       button {
         padding: 20px;
-        font-size: 36px;
+        font-size: 24px;
         border: solid;
         border-radius: 8px;
         background-color: transparent;
@@ -30,11 +37,25 @@
         margin-top: 30px;
         text-align: center;
       }
+      .movie-group {
+        margin-top: 20px;
+      }
+      .movie-group h3 {
+        cursor: pointer;
+      }
+      .movie-group h3:hover {
+        color: #f90;
+      }
       .movie {
-        padding: 20px;
-        font-size: 36px;
+        font-size: 24px;
         margin-top: 10px;
         border-radius: 8px;
+        padding: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 50%;
+        display: none;
         border: solid;
         cursor: pointer;
       }
@@ -109,19 +130,36 @@
 
     // Get the list of movies. Add it to the page.
     var $main = document.querySelector('main');
-    var acceptedFormats = ['mkv', 'mp4', 'mpeg', 'm4v', 'avi'];
     get('/movies', function(xhr) {
       var movies = JSON.parse(xhr.responseText);
       movies.forEach(function(path, idx) {
         var $link = document.createElement('article');
         $link.className = 'movie';
-        var movie = path.split('/').pop();
-        var ext = movie.split('.').pop();
-        if (acceptedFormats.indexOf(ext) > -1) {
-          $link.textContent = movie;
-          $link.onclick = function() { get('/play/' + idx); togglePlayState(true, $link.textContent); };
-          $movies.appendChild($link);
-        }
+        var pathArr = path.split('/');
+        var movie = pathArr.pop();
+        var group = pathArr.pop();
+        var $group = document.getElementById(group);
+
+        if (!$group) {
+          $group = document.createElement('div');
+          $group.id = group;
+          $group.className = 'movie-group';
+          $h3 = document.createElement('h3');
+          $h3.textContent = group;
+          $group.appendChild($h3);
+          $movies.appendChild($group);
+          $group.onclick = function() { 
+            var movies = $group.querySelectorAll('.movie'); 
+            for (var i = 0; i < movies.length; i += 1) { 
+              movies[i].style.display = movies[i].style.display === 'inline-block' ? 'none' : 'inline-block'; 
+            }; 
+          };
+        } 
+
+        $link.textContent = movie;
+        $link.onclick = function() { get('/play/' + idx); togglePlayState(true, $link.textContent); };
+
+        $group.appendChild($link);
       });
     });
 

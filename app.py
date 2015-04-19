@@ -26,12 +26,16 @@ def off():
 def movies():
     movies = subprocess.check_output(['find', '/home/pi/usbdrv', '-type', 'f', '-not', '-path', '*/\.*'])
     movie_list = movies.strip().split('\n')
+    movie_list = [movie for movie in movie_list if os.path.splitext(movie)[1] in ['.mkv', '.mp4', '.mpeg', '.m4v', '.avi']]
+    movie_list.sort()
     return json.dumps(movie_list)
 
 @app.route('/play/<idx>')
 def play(idx):
     movies = subprocess.check_output(['find', '/home/pi/usbdrv', '-type', 'f', '-not', '-path', '*/\.*'])
     movie_list = movies.strip().split('\n')
+    movie_list = [movie for movie in movie_list if os.path.splitext(movie)[1] in ['.mkv', '.mp4', '.mpeg', '.m4v', '.avi']]
+    movie_list.sort()
     omxhandler.start(movie_list[int(idx)])
     return 'done'
 
