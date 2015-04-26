@@ -22,6 +22,11 @@ def off():
     subprocess.call([os.path.join(cwd, 'commands/off.sh')])
     return 'done'
 
+@app.route('/playball')
+def playball():
+    subprocess.Popen([os.path.join(cwd, 'commands/playball.sh')])
+    return 'done'
+
 @app.route('/movies')
 def movies():
     movies = subprocess.check_output(['find', '/home/pi/usbdrv', '-type', 'f', '-not', '-path', '*/\.*'])
@@ -30,14 +35,29 @@ def movies():
     movie_list.sort()
     return json.dumps(movie_list)
 
+@app.route('/history')
+def history():
+    history = []
+    with open(os.path.join(cwd, 'history.log'), 'r') as f:
+        for item in f:
+            history.append(item.strip())
+    return json.dumps(history)
+
 @app.route('/play/<idx>')
 def play(idx):
-    movies = subprocess.check_output(['find', '/home/pi/usbdrv', '-type', 'f', '-not', '-path', '*/\.*'])
-    movie_list = movies.strip().split('\n')
-    movie_list = [movie for movie in movie_list if os.path.splitext(movie)[1] in ['.mkv', '.mp4', '.mpeg', '.m4v', '.avi']]
-    movie_list.sort()
-    omxhandler.start(movie_list[int(idx)])
-    return 'done'
+    history_list = json.loads(history())
+    movie_list = json.loads(movies())
+
+    movie = movie_list[int(idx)]
+    if movie in history_list:
+        return 'found'
+
+    omxhandler.start(movie)
+    with open(os.path.join(cwd, 'history.log'), 'a') as f:
+        f.write(movie)
+        f.write('\n')
+
+    return movie
 
 @app.route('/playing')
 def playing():

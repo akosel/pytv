@@ -3,3 +3,4 @@
 *.log
 venv
 nohup.out
+playball.sh

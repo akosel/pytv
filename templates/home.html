@@ -63,6 +63,9 @@
         background-color: #ccc;
       }
       
+      .loading {
+        font-size: 36px;
+      }
       #quit {
         margin: 50px 0;
       }
@@ -91,6 +94,7 @@
 
   </section>
   <section class='movies'>
+    <p class='loading'>Loading...</p>
   </section>
   <section class='tv-buttons'>
     <button id='on' type=button>TV On</button>
@@ -98,21 +102,11 @@
   </section>
   </main>
   <script>
-    var poll = function() {
-      get('/playing', function(xhr) {
-        if (xhr.responseText === 'True') {
-          togglePlayState(true);
-        } else {
-          togglePlayState(false);
-        }
-      });
-    };
-    poll();
-    setInterval(poll, 2000);
     // Selectors
     var $buttons = document.querySelector('.remote-buttons');
     var $movies = document.querySelector('.movies');
     var $message = document.querySelector('.message');
+    var $loading = document.querySelector('.loading');
     var $title = document.querySelector('.title');
 
     // Event Listeners
@@ -128,9 +122,22 @@
     document.querySelector('#on').onclick = function() { get('/on'); };
     document.querySelector('#off').onclick = function() { get('/off'); };
 
+    var poll = function() {
+      get('/playing', function(xhr) {
+        if (xhr.responseText === 'True') {
+          togglePlayState(true);
+        } else {
+          togglePlayState(false);
+        }
+      });
+    };
+    poll();
+    setInterval(poll, 2000);
+
     // Get the list of movies. Add it to the page.
     var $main = document.querySelector('main');
     get('/movies', function(xhr) {
+      $loading.textContent = '';
       var movies = JSON.parse(xhr.responseText);
       movies.forEach(function(path, idx) {
         var $link = document.createElement('article');
@@ -157,7 +164,12 @@
         } 
 
         $link.textContent = movie;
-        $link.onclick = function() { get('/play/' + idx); togglePlayState(true, $link.textContent); };
+        $link.onclick = function() { 
+          get('/play/' + idx, function(r) {
+            console.log('play resp', r);
+            togglePlayState(true, $link.textContent); 
+          }); 
+        };
 
         $group.appendChild($link);
       });
