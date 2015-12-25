@@ -4,3 +4,4 @@
 venv
 nohup.out
 playball.sh
+config.py
