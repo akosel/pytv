@@ -83,6 +83,9 @@
   <p class='message'></p>
   <section class='remote-buttons'>
     <button id='toggle_play' type=button>Play/Pause</button>
+    <button id='toggle_subtitles' type=button>Toggle Subtitles</button>
+    <button id='previous_subtitle_stream' type=button>Previous Subtitle Stream</button>
+    <button id='next_subtitle_stream' type=button>Next Subtitle Stream</button>
     <br>
     <button id='rewind' type=button>Back 30 Seconds</button>
     <button id='forward' type=button>Forward 30 Seconds</button>
@@ -111,6 +114,9 @@
 
     // Event Listeners
     document.querySelector('#toggle_play').onclick = function() { get('/cmd/play'); };
+    document.querySelector('#toggle_subtitles').onclick = function() { get('/cmd/toggle_subtitles'); };
+    document.querySelector('#previous_subtitle_stream').onclick = function() { get('/cmd/previous_subtitle_stream'); };
+    document.querySelector('#next_subtitle_stream').onclick = function() { get('/cmd/next_subtitle_stream'); };
     document.querySelector('#forward').onclick = function() { get('/cmd/forward'); };
     document.querySelector('#rewind').onclick = function() { get('/cmd/rewind'); };
     document.querySelector('#forward_big').onclick = function() { get('/cmd/forward_big'); };

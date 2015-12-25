@@ -14,7 +14,7 @@ echo "as" | cec-client -s
 
 # Start the movie
 $DIR/startplay.sh &
-omxplayer -l "$2" -o hdmi "$1" < /tmp/cmd
+omxplayer -t 1 -o hdmi "$1" < /tmp/cmd
 
 # Remove our playing file
 rm /tmp/playing

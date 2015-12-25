@@ -3,6 +3,7 @@ import subprocess
 import flask
 import omxhandler
 import json
+import config
 from werkzeug.contrib.fixers import ProxyFix
 
 app = flask.Flask(__name__)
@@ -29,7 +30,7 @@ def playball():
 
 @app.route('/movies')
 def movies():
-    movies = subprocess.check_output(['find', '/home/pi/usbdrv', '-type', 'f', '-not', '-path', '*/\.*'])
+    movies = subprocess.check_output(['find', config.MEDIA_FOLDER, '-type', 'f', '-not', '-path', '*/\.*'])
     movie_list = movies.strip().split('\n')
     movie_list = [movie for movie in movie_list if os.path.splitext(movie)[1] in ['.mkv', '.mp4', '.mpeg', '.m4v', '.avi']]
     movie_list.sort()
@@ -49,8 +50,8 @@ def play(idx):
     movie_list = json.loads(movies())
 
     movie = movie_list[int(idx)]
-    if movie in history_list:
-        return 'found'
+    #if movie in history_list:
+    #    return 'found'
 
     omxhandler.start(movie)
     with open(os.path.join(cwd, 'history.log'), 'a') as f:

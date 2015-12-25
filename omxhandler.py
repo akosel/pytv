@@ -28,6 +28,15 @@ def volume_up():
 def volume_down():
     subprocess.call([omx, '-'])
 
+def toggle_subtitles():
+    subprocess.call([omx, 's'])
+
+def previous_subtitle_stream():
+    subprocess.call([omx, 'n'])
+
+def next_subtitle_stream():
+    subprocess.call([omx, 'm'])
+
 def quit():
     subprocess.call(['rm', '/tmp/playing'])
     subprocess.call([omx, 'q'])
@@ -42,5 +51,8 @@ commandDict = {
     'forward_big': forward_big,
     'volume_up': volume_up,
     'volume_down': volume_down,
+    'toggle_subtitles': toggle_subtitles,
+    'previous_subtitle_stream': previous_subtitle_stream,
+    'next_subtitle_stream': next_subtitle_stream,
     'quit': quit
 }
